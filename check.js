@@ -1,5 +1,4 @@
 const axios = require("axios");
-const cheerio = require("cheerio");
 const fs = require("fs");
 
 const webhook = process.env.DISCORD_WEBHOOK;
@@ -10,11 +9,11 @@ async function main() {
     "https://maple.land/board/notices"
   );
 
-const html = response.data;
+  const html = response.data;
 
-console.log(html.substring(0, 3000));
-
-const match = html.match(/\/board\/notices\/[0-9]+/);
+  const match = html.match(
+    /href="(\/board\/notices\/[^"]+)">([^<]+)<\/a>/
+  );
 
   if (!match) {
     console.log("공지 찾기 실패");
@@ -22,7 +21,13 @@ const match = html.match(/\/board\/notices\/[0-9]+/);
   }
 
   const noticeUrl =
-    "https://maple.land" + match[0];
+    "https://maple.land" + match[1];
+
+  const noticeTitle =
+    match[2].trim();
+
+  const currentNotice =
+    `${noticeTitle}|${noticeUrl}`;
 
   let lastNotice = "";
 
@@ -33,19 +38,23 @@ const match = html.match(/\/board\/notices\/[0-9]+/);
     );
   }
 
-  if (noticeUrl === lastNotice) {
+  if (currentNotice === lastNotice) {
     console.log("새 공지 없음");
     return;
   }
 
   await axios.post(webhook, {
     content:
-      `📢 메이플랜드 새 공지\n${noticeUrl}`
+`📢 메이플랜드 새 공지
+
+${noticeTitle}
+
+${noticeUrl}`
   });
 
   fs.writeFileSync(
     "last_notice.txt",
-    noticeUrl
+    currentNotice
   );
 
   console.log("새 공지 전송 완료");
