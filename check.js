@@ -10,9 +10,11 @@ async function main() {
     "https://maple.land/board/notices"
   );
 
-  const html = response.data;
+const html = response.data;
 
-  const match = html.match(/\/board\/notices\/[0-9]+/);
+console.log(html.substring(0, 3000));
+
+const match = html.match(/\/board\/notices\/[0-9]+/);
 
   if (!match) {
     console.log("공지 찾기 실패");
