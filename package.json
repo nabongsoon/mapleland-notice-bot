@@ -1,0 +1,7 @@
+{
+  "name": "mapleland-notice-bot",
+  "dependencies": {
+    "axios": "^1.11.0",
+    "cheerio": "^1.1.2"
+  }
+}
