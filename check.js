@@ -11,9 +11,31 @@ async function main() {
 
   const html = response.data;
 
-  const match = html.match(
-    /href="(\/board\/notices\/[^"]+)">([^<]+)<\/a>/
-  );
+const matches = [
+  ...html.matchAll(/href="(\/board\/notices\/[^"]+)"/g)
+];
+
+console.log("찾은 공지 수:", matches.length);
+
+if (matches.length === 0) {
+  console.log("공지 찾기 실패");
+  return;
+}
+
+const noticePath = matches[0][1];
+const noticeUrl = "https://maple.land" + noticePath;
+
+console.log("최신 공지:", noticeUrl);
+
+const titleRegex = new RegExp(
+  `href="${noticePath.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}">([^<]+)`
+);
+
+const titleMatch = html.match(titleRegex);
+
+const noticeTitle = titleMatch
+  ? titleMatch[1].trim()
+  : "제목 확인 실패";
 
   if (!match) {
     console.log("공지 찾기 실패");
