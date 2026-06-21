@@ -1,10 +1,10 @@
 name: Maple Bot
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"
   workflow_dispatch:
   push:
+  schedule:
+    - cron: '*/5 * * * *'
   
 permissions:
   contents: write
