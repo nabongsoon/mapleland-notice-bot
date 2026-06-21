@@ -69,8 +69,6 @@ async function main() {
   });
 
   console.log("읽은 공지 수:", posts.length);
-
-  posts.forEach(p => console.log(p.title));
   
   const last = loadLast();
 
