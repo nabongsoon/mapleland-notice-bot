@@ -1,3 +1,4 @@
+console.log("WEBHOOK 확인:", WEBHOOK);
 const axios = require("axios");
 const fs = require("fs");
 
@@ -15,9 +16,19 @@ function saveLast(data) {
 }
 
 async function send(title, link) {
-  await axios.post(WEBHOOK, {
-    content: `📢 새 공지\n${title}\nhttps://maple.land${link}`
-  });
+  try {
+    if (!WEBHOOK) {
+      console.log("WEBHOOK 없음!");
+      return;
+    }
+
+    await axios.post(WEBHOOK, {
+      content: `📢 새 공지\n${title}\nhttps://maple.land${link}`
+    });
+
+  } catch (e) {
+    console.log("디스코드 에러:", e.response?.data || e.message);
+  }
 }
 
 async function main() {
