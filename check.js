@@ -6,14 +6,11 @@ const WEBHOOK = process.env.DISCORD_WEBHOOK;
 const URL = "https://maple.land/board/notices";
 const FILE = "last.json";
 
-console.log("봇 시작됨");
-
 function loadLast() {
   try {
     if (!fs.existsSync(FILE)) return [];
     return JSON.parse(fs.readFileSync(FILE, "utf8"));
-  } catch (e) {
-    console.log("저장 파일 손상 → 초기화");
+  } catch {
     return [];
   }
 }
@@ -22,80 +19,86 @@ function saveLast(data) {
   fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
 }
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 async function send(post) {
   try {
-    if (!WEBHOOK) throw new Error("WEBHOOK 없음");
-
     await axios.post(WEBHOOK, {
       embeds: [
         {
           title: post.title,
           url: "https://maple.land" + post.href,
-          color: 0x00b0f4,
-          footer: { text: "maple.land notice bot" }
+          description: "새 공지가 등록되었습니다.",
+          color: 3447003
         }
       ]
     });
 
     console.log("전송:", post.title);
   } catch (e) {
-    console.log("Discord 실패:", e.response?.data || e.message);
+    console.log("전송 실패:", e.response?.data || e.message);
   }
-}
-
-async function fetchWithRetry(url, retry = 3) {
-  for (let i = 0; i < retry; i++) {
-    try {
-      return await axios.get(url);
-    } catch (e) {
-      console.log(`재시도 ${i + 1}/${retry}`);
-      await new Promise(r => setTimeout(r, 2000));
-    }
-  }
-  throw new Error("페이지 요청 실패");
 }
 
 async function main() {
-  try {
-    const res = await fetchWithRetry(URL);
-    const $ = cheerio.load(res.data);
+  console.log("봇 시작");
 
-    const posts = [];
+  const res = await axios.get(URL);
+  const $ = cheerio.load(res.data);
 
-    $("a").each((_, el) => {
-      const href = $(el).attr("href");
-      const title = $(el).text().trim();
+  const posts = [];
 
-      if (href && href.includes("/board/notices/") && title.length > 3) {
-        posts.push({
-          id: href,   // 🔥 핵심: ID 기반
-          href,
-          title
-        });
-      }
-    });
+  $("a").each((_, el) => {
+    const href = $(el).attr("href");
+    const title = $(el).text().trim();
 
-    const last = loadLast();
-
-    const newPosts = posts.filter(
-      p => !last.find(l => l.id === p.id)
-    );
-
-    console.log("전체:", posts.length);
-    console.log("신규:", newPosts.length);
-
-    for (const post of newPosts.reverse()) {
-      await send(post);
+    if (
+      href &&
+      href.includes("/board/notices/") &&
+      title.length > 3
+    ) {
+      posts.push({
+        id: href,
+        href,
+        title
+      });
     }
+  });
 
-    if (newPosts.length > 0) {
-      saveLast(posts);
-    }
+  console.log("읽은 공지 수:", posts.length);
 
-    console.log("완료");
-  } catch (e) {
-    console.log("전체 오류:", e.message);
+  const last = loadLast();
+
+  // ⭐ 처음 실행이면 저장만 함
+  if (last.length === 0) {
+    console.log("첫 실행 - 기존 공지 저장");
+
+    saveLast(posts);
+
+    return;
   }
+
+  const newPosts = posts.filter(
+    p => !last.some(l => l.id === p.id)
+  );
+
+  console.log("신규 공지:", newPosts.length);
+
+  for (const post of newPosts.reverse()) {
+    await send(post);
+
+    // 디스코드 제한 방지
+    await sleep(1000);
+  }
+
+  saveLast(posts);
+
+  console.log("완료");
 }
 
-main();
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});
