@@ -1,5 +1,6 @@
 const axios = require("axios");
 const fs = require("fs");
+const cheerio = require("cheerio");
 
 const WEBHOOK = process.env.DISCORD_WEBHOOK;
 const URL = "https://maple.land/board/notices";
@@ -18,33 +19,37 @@ function saveLast(data) {
 
 async function send(title, link) {
   try {
-    if (!WEBHOOK) {
-      console.log("WEBHOOK 없음 (GitHub Secrets 확인 필요)");
-      return;
-    }
+    if (!WEBHOOK) return;
 
     await axios.post(WEBHOOK, {
       content: `📢 새 공지\n${title}\nhttps://maple.land${link}`
     });
 
-    console.log("디스코드 전송 성공");
+    console.log("전송 완료:", title);
   } catch (e) {
-    console.log("디스코드 에러:");
-    console.log(e.response?.data || e.message);
+    console.log("디스코드 에러:", e.response?.data || e.message);
   }
 }
 
 async function main() {
   try {
     const res = await axios.get(URL);
-    const html = res.data;
+    const $ = cheerio.load(res.data);
 
-    const matches = [...html.matchAll(/href="(\/board\/notices\/[^"]+)">([^<]+)</g)];
+    const posts = [];
 
-    const posts = matches.map(m => ({
-      href: m[1],
-      title: m[2]
-    }));
+    // 👉 a 태그 전체를 안정적으로 탐색
+    $("a").each((_, el) => {
+      const href = $(el).attr("href");
+      const title = $(el).text().trim();
+
+      if (href && href.includes("/board/notices/") && title) {
+        posts.push({
+          href,
+          title
+        });
+      }
+    });
 
     const last = loadLast();
 
@@ -52,7 +57,7 @@ async function main() {
       p => !last.find(l => l.href === p.href)
     );
 
-    console.log("전체 글:", posts.length);
+    console.log("전체:", posts.length);
     console.log("새 글:", newPosts.length);
 
     if (newPosts.length > 0) {
