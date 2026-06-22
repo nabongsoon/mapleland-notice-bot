@@ -5,9 +5,19 @@
     "title": "[MSW 아바타 코디 반지] 서비스 일시중단 안내"
   },
   {
+    "id": "/board/notices/tnl0322e41qm84u1wq85uxfz",
+    "href": "/board/notices/tnl0322e41qm84u1wq85uxfz",
+    "title": "6/23 오전 3:15 긴급 마이그레이션 안내"
+  },
+  {
+    "id": "/board/notices/ck9hdmf29xyclys37awqzk64",
+    "href": "/board/notices/ck9hdmf29xyclys37awqzk64",
+    "title": "6/23 접속 종료 현상 관련 안내"
+  },
+  {
     "id": "/board/notices/yh50dn3xcrh6opvszvpvgcwx",
     "href": "/board/notices/yh50dn3xcrh6opvszvpvgcwx",
-    "title": "2026년 6월 23일(화) 무중단 배포 안내"
+    "title": "2026년 6월 23일(화) 무중단 배포 안내 (2:49 수정)"
   },
   {
     "id": "/board/notices/ntskox4t8jjcjls17jz686mz",
@@ -88,15 +98,5 @@
     "id": "/board/notices/kt938y3rrbk79klptz45c24s",
     "href": "/board/notices/kt938y3rrbk79klptz45c24s",
     "title": "Mapleland 2.0 오픈 알파 테스트 종료 및 보상 안내 (6/13 추가)"
-  },
-  {
-    "id": "/board/notices/o4gxsdqu0fntw4epq2dgr99o",
-    "href": "/board/notices/o4gxsdqu0fntw4epq2dgr99o",
-    "title": "2026년 6월 19일(금) 대규모 업데이트 및 점검 예정 안내 (+내용추가)"
-  },
-  {
-    "id": "/board/notices/ih8tlwnkn3sfrpckrqapiih2",
-    "href": "/board/notices/ih8tlwnkn3sfrpckrqapiih2",
-    "title": "2026년 5월 제재내역 [사행성 · 홍보]"
   }
 ]
