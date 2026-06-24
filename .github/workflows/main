@@ -1,3 +1,16 @@
+name: Notice Bot Trigger
+
 on:
   repository_dispatch:
     types: [external_trigger]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run bot
+        run: node check.js
