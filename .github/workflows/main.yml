@@ -16,7 +16,7 @@ jobs:
           node-version: 20
 
       - run: npm install
-
-    - run: node check.js
-  env:
-    DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+ 
+       - run: node check.js
+         env:
+           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
