@@ -5,6 +5,16 @@
     "title": "[MSW 아바타 코디 반지] 서비스 일시중단 안내"
   },
   {
+    "id": "/board/notices/zbtp5nb9jn81yhwy2w9lfwwk",
+    "href": "/board/notices/zbtp5nb9jn81yhwy2w9lfwwk",
+    "title": "<경험치 2배 쿠폰 상자> 관련 안내"
+  },
+  {
+    "id": "/board/notices/iee0flx64vyu0mkdabt548h0",
+    "href": "/board/notices/iee0flx64vyu0mkdabt548h0",
+    "title": "알려진 이슈 안내 (06/24)"
+  },
+  {
     "id": "/board/notices/mxd20mh35bwpysb6lhkm0kcm",
     "href": "/board/notices/mxd20mh35bwpysb6lhkm0kcm",
     "title": "6월 24일 추가 무중단 배포 및 보상 안내"
@@ -88,15 +98,5 @@
     "id": "/board/notices/ch529menibo087v2vmxx8o29",
     "href": "/board/notices/ch529menibo087v2vmxx8o29",
     "title": "버닝 월드 오픈 3시간 지연 안내"
-  },
-  {
-    "id": "/board/notices/k2u06u7rr9x8vdzw7x1vse84",
-    "href": "/board/notices/k2u06u7rr9x8vdzw7x1vse84",
-    "title": "2026년 6월 19일(금) 패치노트 (11:35 추가)"
-  },
-  {
-    "id": "/board/notices/fh538jlpekalswietqbtlf5h",
-    "href": "/board/notices/fh538jlpekalswietqbtlf5h",
-    "title": "2026년 6월 19일(금) 공식 홈페이지 점검 안내"
   }
 ]
