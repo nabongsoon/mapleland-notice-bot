@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '*/15 * * * *'
-  
+
 permissions:
   contents: write
 
@@ -32,6 +32,7 @@ jobs:
 
           git add last.json
 
-          git diff --staged --quiet || git commit -m "Update last.json"
+          git diff --staged --quiet && exit 0
 
+          git commit -m "Update last.json"
           git push
