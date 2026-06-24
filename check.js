@@ -8,28 +8,28 @@ async function main() {
   const res = await axios.get("https://maple.land/board/notices");
   const html = res.data;
 
-  // 🔥 모든 공지 다 가져오기
   const matches = [...html.matchAll(
     /href="(\/board\/notices\/[^"]+)">([^<]+)<\/a>/g
   )];
 
   if (matches.length === 0) return;
 
-  const notices = matches.map(m => ({
-    url: m[1],
-    title: m[2],
-    id: m[1] // URL만 기준으로 사용
-  }));
+  // 🔥 최신 공지 1개만 가져오기
+  const latest = {
+    id: matches[0][1],
+    title: matches[0][2]
+  };
 
   let last = "";
 
-  if (fs.existsSync("last.json")) {
+  try {
     last = fs.readFileSync("last.json", "utf-8");
+  } catch (e) {
+    last = "";
   }
 
-  const latest = notices[0];
-
-  if (latest.id === last) {
+  // 🔥 이미 처리한 거면 종료
+  if (last === latest.id) {
     console.log("no new notice");
     return;
   }
@@ -37,7 +37,7 @@ async function main() {
   console.log("new notice:", latest.title);
 
   await axios.post(webhook, {
-    content: `📢 ${latest.title}\nhttps://maple.land${latest.url}`
+    content: `📢 ${latest.title}\nhttps://maple.land${latest.id}`
   });
 
   fs.writeFileSync("last.json", latest.id);
