@@ -4,6 +4,8 @@ async function main() {
   const res = await axios.get("https://maple.land/board/notices");
   const html = res.data;
 
+  console.log(html.substring(0, 5000));
+
   const matches = [...html.matchAll(/\/board\/notices\/[^"]+/g)];
 
   console.log(
