@@ -4,12 +4,15 @@ async function main() {
   const res = await axios.get("https://maple.land/board/notices");
   const html = res.data;
 
-  console.log(html.substring(0, 5000));
-
-  const matches = [...html.matchAll(/\/board\/notices\/[^"]+/g)];
+  const matches = [...html.matchAll(
+    /href="(\/board\/notices\/[^"]+)">([^<]+)<\/a>/g
+  )];
 
   console.log(
-    matches.slice(0, 20).map(x => x[0])
+    matches.slice(0, 5).map(x => ({
+      id: x[1],
+      title: x[2]
+    }))
   );
 }
 
