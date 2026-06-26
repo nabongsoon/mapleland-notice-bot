@@ -1,34 +1,42 @@
 const fs = require("fs");
 const axios = require("axios");
+const cheerio = require("cheerio");
 
 const webhook = process.env.DISCORD_WEBHOOK;
 
 async function main() {
   const res = await axios.get("https://maple.land/board/notices");
-  const html = res.data;
+  const $ = cheerio.load(res.data);
 
-  const matches = [...html.matchAll(
-    /href="(\/board\/notices\/[^"]+)">([^<]+)<\/a>/g
-  )];
+  let latest = null;
 
-  if (matches.length < 2) {
+  // 공지 링크를 순서대로 확인
+  $("a[href^='/board/notices/']").each((_, el) => {
+    const id = $(el).attr("href");
+    const title = $(el).text().trim();
+
+    // 제목이 없는 건 건너뜀
+    if (!title) return;
+
+    // 고정 공지는 건너뜀
+    if (title.includes("서비스 일시중단 안내")) return;
+
+    latest = { id, title };
+
+    // 첫 번째 일반 공지만 사용
+    return false;
+  });
+
+  if (!latest) {
     console.log("notice parse failed");
     return;
   }
 
-  // 첫 번째는 고정공지라 두 번째를 최신 공지로 사용
-  const latest = {
-    id: matches[1][1],
-    title: matches[1][2]
-  };
-
   let last = "";
 
   try {
-    last = fs.readFileSync("last.json", "utf-8").trim();
-  } catch (e) {
-    last = "";
-  }
+    last = fs.readFileSync("last.json", "utf8").trim();
+  } catch (e) {}
 
   if (last === latest.id) {
     console.log("no new notice");
