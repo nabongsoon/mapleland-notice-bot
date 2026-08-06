@@ -18,8 +18,13 @@ async function main() {
     // 제목이 없는 건 건너뜀
     if (!title) return;
 
-    // 고정 공지는 건너뜀
-    if (title.includes("서비스 일시중단 안내")) return;
+// 항상 상단에 고정되는 공지들은 건너뜀
+if (
+  title.includes("서비스 일시중단 안내") ||
+  title.includes("알려진 이슈 안내")
+) {
+  return;
+}
 
     latest = { id, title };
 
