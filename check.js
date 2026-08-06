@@ -10,25 +10,28 @@ async function main() {
 
   let latest = null;
 
-  // 공지 링크를 순서대로 확인
-  $("a[href^='/board/notices/']").each((_, el) => {
-    const id = $(el).attr("href");
-    const title = $(el).text().trim();
+  $("tbody tr").each((_, tr) => {
+    const row = $(tr);
 
-    // 제목이 없는 건 건너뜀
-    if (!title) return;
+    // 고정 공지는 보통 data-pin, notice, fixed 등의 클래스나 속성이 있음
+    const cls = row.attr("class") || "";
+    if (
+      cls.includes("notice") ||
+      cls.includes("fixed") ||
+      cls.includes("pin")
+    ) {
+      return;
+    }
 
-// 항상 상단에 고정되는 공지들은 건너뜀
-if (
-  title.includes("서비스 일시중단 안내") ||
-  title.includes("알려진 이슈 안내")
-) {
-  return;
-}
+    const link = row.find("a[href^='/board/notices/']").first();
 
-    latest = { id, title };
+    if (!link.length) return;
 
-    // 첫 번째 일반 공지만 사용
+    latest = {
+      id: link.attr("href"),
+      title: link.text().trim()
+    };
+
     return false;
   });
 
@@ -41,7 +44,7 @@ if (
 
   try {
     last = fs.readFileSync("last.json", "utf8").trim();
-  } catch (e) {}
+  } catch {}
 
   if (last === latest.id) {
     console.log("no new notice");
